@@ -29,7 +29,7 @@ namespace PlayingWithSpan
 			var coordinate = (Coordinate)Marshal.PtrToStructure(pointPtr, typeof(Coordinate));
 			Marshal.FreeHGlobal(pointPtr);
 
-			var data = Encoding.ASCII.GetString(buffer, 4 + pointSize, buffer.Length - (4 + pointSize));
+			var data = Encoding.Unicode.GetString(buffer, 4 + pointSize, buffer.Length - (4 + pointSize));
 			Console.Out.WriteLine($"Value is {value}, coordinate is ({coordinate.X}, {coordinate.Y}, {coordinate.Z}), data is {data}");
 		}
 
@@ -56,7 +56,7 @@ namespace PlayingWithSpan
 			Marshal.Copy(pointPtr, pointArray, 0, pointSize);
 			Marshal.FreeHGlobal(pointPtr);
 
-			var dataArray = Encoding.ASCII.GetBytes(data);
+			var dataArray = Encoding.Unicode.GetBytes(data);
 
 			var buffer = new List<byte>();
 			buffer.AddRange(valueArray);
