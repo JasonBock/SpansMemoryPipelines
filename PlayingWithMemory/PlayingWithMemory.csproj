@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.10.8" />
-    <PackageReference Include="System.Memory" Version="4.4.0-preview2-25405-01" />
   </ItemGroup>
 
 </Project>
