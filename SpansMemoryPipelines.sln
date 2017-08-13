@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayingWithSpan", "PlayingWithSpan\PlayingWithSpan.csproj", "{BDDC4D92-4881-4703-ABD5-D0CD7CE86834}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayingWithMemory", "PlayingWithMemory\PlayingWithMemory.csproj", "{0075A33F-5127-44B7-8C6E-BBE5194508CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayingWithMemory", "PlayingWithMemory\PlayingWithMemory.csproj", "{0075A33F-5127-44B7-8C6E-BBE5194508CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayingWithPipelines", "PlayingWithPipelines\PlayingWithPipelines.csproj", "{224E7009-699A-4EAC-A080-313F5F9053A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0075A33F-5127-44B7-8C6E-BBE5194508CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0075A33F-5127-44B7-8C6E-BBE5194508CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0075A33F-5127-44B7-8C6E-BBE5194508CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{224E7009-699A-4EAC-A080-313F5F9053A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{224E7009-699A-4EAC-A080-313F5F9053A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{224E7009-699A-4EAC-A080-313F5F9053A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{224E7009-699A-4EAC-A080-313F5F9053A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

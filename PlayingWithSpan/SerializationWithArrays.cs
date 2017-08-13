@@ -1,6 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -11,6 +12,7 @@ namespace PlayingWithSpan
 	{
 		private byte[] converterData;
 		private byte[] spanData;
+		private byte[] streamData;
 
 		[GlobalSetup]
 		public void Setup()
@@ -18,7 +20,10 @@ namespace PlayingWithSpan
 			this.converterData = BufferGenerators.GenerateWithConverters(
 				22, new Coordinate { X = 10, Y = 20, Z = 30 },
 				"This is a lot of string data. This is a lot of string data. This is a lot of string data.");
-			this.spanData = BufferGenerators.GenerateWithSpans(
+			this.streamData = BufferGenerators.GenerateWithStream(
+				22, new Coordinate { X = 10, Y = 20, Z = 30 },
+				"This is a lot of string data. This is a lot of string data. This is a lot of string data.");
+			this.spanData = BufferGenerators.GenerateWithSpan(
 				22, new Coordinate { X = 10, Y = 20, Z = 30 },
 				"This is a lot of string data. This is a lot of string data. This is a lot of string data.");
 		}
@@ -34,10 +39,28 @@ namespace PlayingWithSpan
 			var coordinate = (Coordinate)Marshal.PtrToStructure(pointPtr, typeof(Coordinate));
 			Marshal.FreeHGlobal(pointPtr);
 
-			var data = Encoding.Unicode.GetString(this.converterData, 
+			var data = Encoding.Unicode.GetString(this.converterData,
 				4 + pointSize, this.converterData.Length - (4 + pointSize));
 
 			return value + coordinate.Y + data.Length;
+		}
+
+		[Benchmark]
+		public int GetStreamValue()
+		{
+			using (var reader = new BinaryReader(new MemoryStream(this.streamData), Encoding.Unicode))
+			{
+				var value = reader.ReadInt32();
+				var coordinate = new Coordinate
+				{
+					X = reader.ReadInt32(),
+					Y = reader.ReadInt32(),
+					Z = reader.ReadInt32()
+				};
+				var data = reader.ReadString();
+
+				return value + coordinate.Y + data.Length;
+			}
 		}
 
 		[Benchmark]

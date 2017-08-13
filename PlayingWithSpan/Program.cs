@@ -5,6 +5,6 @@ namespace PlayingWithSpan
 	class Program
 	{
 		static void Main(string[] args) =>
-			BenchmarkRunner.Run<BufferGeneratorPerformance>();
+			BenchmarkRunner.Run<SerializationWithArrays>();
 	}
 }

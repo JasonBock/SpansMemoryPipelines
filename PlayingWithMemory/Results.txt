@@ -1,0 +1,52 @@
+﻿List Index Results:
+
+              Method |       Mean |     Error |    StdDev | Scaled | ScaledSD | Allocated |
+-------------------- |-----------:|----------:|----------:|-------:|---------:| ---------:|
+ GetNameFromFastList |  0.3217 ns | 0.0194 ns | 0.0151 ns |   1.00 |     0.00 |       0 B |
+ GetNameFromSlowList | 17.9830 ns | 0.3010 ns | 0.2815 ns |  56.02 |     2.71 |       0 B |
+
+
+Scaling Results:
+
+            Method | ArraySize |          Mean |         Error |        StdDev | Scaled | ScaledSD |   Gen 0 | Allocated |
+ ----------------- |---------- |--------------:|--------------:|--------------:|-------:|---------:|--------:|----------:|
+     ScaleWithLinq |        10 |     179.04 ns |     3.2419 ns |     2.8738 ns |   9.93 |     0.26 |  0.0875 |     184 B |
+  ScaleWithoutLinq |        10 |      18.03 ns |     0.4100 ns |     0.3835 ns |   1.00 |     0.00 |  0.0305 |      64 B |
+     ScaleWithLinq |       100 |     802.97 ns |    10.3724 ns |     8.0981 ns |   4.71 |     0.08 |  0.2737 |     576 B |
+  ScaleWithoutLinq |       100 |     170.58 ns |     2.4445 ns |     2.2866 ns |   1.00 |     0.00 |  0.2019 |     424 B |
+     ScaleWithLinq |      1000 |   7,448.30 ns |    64.2739 ns |    53.6716 ns |   1.35 |     0.02 |  2.5940 |    5472 B |
+  ScaleWithoutLinq |      1000 |   5,537.28 ns |    61.8107 ns |    57.8178 ns |   1.00 |     0.00 |  1.9150 |    4024 B |
+     ScaleWithLinq |     10000 | 118,481.63 ns | 2,327.6251 ns | 3,107.3127 ns |   1.67 |     0.04 | 20.5078 |   43080 B |
+  ScaleWithoutLinq |     10000 |  71,135.25 ns |   491.2257 ns |   410.1957 ns |   1.00 |     0.00 | 18.7988 |   40024 B |
+
+  65%, 26%, 26%, 7%
+
+
+Allocating Results:
+
+               Method |  Size |         Mean |      Error |     StdDev |       Median |   Gen 0 | Allocated |
+--------------------- |------ |-------------:|-----------:|-----------:|-------------:|--------:|----------:|
+  AllocateWithMarshal |    10 |    91.611 ns |  1.8398 ns |  3.2702 ns |    90.500 ns |       - |       0 B |
+ AllocateWithPointers |    10 |     3.745 ns |  0.1289 ns |  0.3551 ns |     3.679 ns |       - |       0 B |
+      AllocateWithNew |    10 |     6.832 ns |  0.4186 ns |  1.2341 ns |     6.393 ns |  0.0191 |      40 B |
+  AllocateWithMarshal |    50 |    93.403 ns |  2.5642 ns |  4.2842 ns |    91.939 ns |       - |       0 B |
+ AllocateWithPointers |    50 |     2.678 ns |  0.0717 ns |  0.0635 ns |     2.687 ns |       - |       0 B |
+      AllocateWithNew |    50 |     8.033 ns |  0.1972 ns |  0.2110 ns |     8.016 ns |  0.0381 |      80 B |
+  AllocateWithMarshal |   100 |    90.095 ns |  1.7033 ns |  2.7016 ns |    89.356 ns |       - |       0 B |
+ AllocateWithPointers |   100 |     2.841 ns |  0.0992 ns |  0.0928 ns |     2.823 ns |       - |       0 B |
+      AllocateWithNew |   100 |    10.819 ns |  0.2365 ns |  0.2097 ns |    10.814 ns |  0.0610 |     128 B |
+  AllocateWithMarshal |   500 |    89.053 ns |  1.4780 ns |  1.0687 ns |    89.265 ns |       - |       0 B |
+ AllocateWithPointers |   500 |     2.858 ns |  0.0965 ns |  0.0948 ns |     2.850 ns |       - |       0 B |
+      AllocateWithNew |   500 |    36.060 ns |  0.7335 ns |  0.6861 ns |    36.127 ns |  0.2517 |     528 B |
+  AllocateWithMarshal |  1000 |    89.345 ns |  1.8085 ns |  2.2210 ns |    89.350 ns |       - |       0 B |
+ AllocateWithPointers |  1000 |     2.943 ns |  0.1434 ns |  0.1652 ns |     2.879 ns |       - |       0 B |
+      AllocateWithNew |  1000 |    61.897 ns |  1.1867 ns |  1.1655 ns |    61.868 ns |  0.4880 |    1024 B |
+  AllocateWithMarshal |  5000 |    92.538 ns |  2.3496 ns |  2.9715 ns |    92.223 ns |       - |       0 B |
+ AllocateWithPointers |  5000 |     3.524 ns |  0.1091 ns |  0.0967 ns |     3.519 ns |       - |       0 B |
+      AllocateWithNew |  5000 |   314.255 ns |  6.5708 ns |  6.4534 ns |   315.016 ns |  2.3923 |    5024 B |
+  AllocateWithMarshal | 10000 |    91.941 ns |  1.4564 ns |  1.3623 ns |    92.080 ns |       - |       0 B |
+ AllocateWithPointers | 10000 |     7.263 ns |  0.1804 ns |  0.1853 ns |     7.235 ns |       - |       0 B |
+      AllocateWithNew | 10000 |   601.398 ns |  9.0156 ns |  7.9921 ns |   601.224 ns |  4.7846 |   10024 B |
+  AllocateWithMarshal | 50000 |   206.367 ns |  4.0885 ns |  3.8244 ns |   204.869 ns |       - |       0 B |
+ AllocateWithPointers | 50000 |     9.741 ns |  0.2367 ns |  0.5294 ns |     9.563 ns |       - |       0 B |
+      AllocateWithNew | 50000 | 2,740.870 ns | 66.1250 ns | 81.2075 ns | 2,715.527 ns | 23.8075 |   50024 B |
