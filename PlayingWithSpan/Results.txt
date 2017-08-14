@@ -1,0 +1,12 @@
+﻿Formatting Results:
+
+                    Method | Numbers |       Mean |      Error |    StdDev |     Median |   Gen 0 | Allocated |
+-------------------------- |-------- |-----------:|-----------:|----------:|-----------:|--------:|----------:|
+   FormatWithStringBuilder |     100 |   6.266 us |  0.2134 us | 0.2192 us |   6.153 us |  1.7624 |    3704 B |
+ FormatWithStringFormatter |     100 |  11.825 us |  0.2462 us | 0.2303 us |  11.808 us |  0.2594 |     560 B |
+   FormatWithStringBuilder |     500 |  35.006 us |  0.6747 us | 0.7499 us |  34.929 us |  8.6060 |   18104 B |
+ FormatWithStringFormatter |     500 |  57.613 us |  0.6166 us | 0.5466 us |  57.598 us |  0.9766 |    2128 B |
+   FormatWithStringBuilder |    1000 |  63.442 us |  1.2670 us | 2.1855 us |  62.429 us | 17.2119 |   36104 B |
+ FormatWithStringFormatter |    1000 | 114.220 us |  1.4733 us | 1.3061 us | 114.323 us |  1.9531 |    4152 B |
+   FormatWithStringBuilder |    5000 | 313.077 us |  5.9160 us | 5.5338 us | 314.750 us | 85.4492 |  180104 B |
+ FormatWithStringFormatter |    5000 | 575.361 us | 10.4185 us | 9.7455 us | 573.666 us | 11.7188 |   26488 B |
