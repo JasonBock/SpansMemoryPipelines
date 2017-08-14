@@ -2,7 +2,7 @@
 using System;
 
 namespace PlayingWithMemory
-{
+{	
 	class Program
 	{
 		static void Main(string[] args) =>

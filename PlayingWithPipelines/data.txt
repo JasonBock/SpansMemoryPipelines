@@ -1,0 +1,137 @@
+﻿Pi, Palindromes, and Primes
+Tagline
+Sometimes it’s fun to step away from the line-of-business applications and do something different. But be careful, you may end up learning something.
+How would you move a Mt. Fuji-sized mountain of round manhole covers?
+I’m not very good at solving problems. In fact, I kind of stink at it. I’m truly envious at people who can read a mathematical or logic problem and immediately come up with an answer with what seemed like little effort.  For whatever reason, I just can’t find the leaf from the forest the trees, and I end up getting frustrated. But that doesn’t deter me from trying – in fact, this kind of failure is a motivational factor for me. I want to get better at things I know I can improve upon. 
+Recently at the Twin Cities Code Camp (http://www.twincitiescodecamp.com) a sponsor had a mathematical puzzle posted on the boxes that contained water bottles that they were giving away. If you figured out the answer, you would send an e-mail to them where the e-mail address contained the answer. I wasn’t really interested in sending the e-mail; what I was interested in was solving the problem, because it’s good exercise for what I do on a day-to-day basis.
+To me, software development is all about solving problems. A client or a business area comes to you and says something like, “we need to do a big update to SystemX”, and it’s up to you (and probably many others) to come up with ingenious, elegant solutions, usually under numerous constraints. The details of the problems always vary, but the essence of the process doesn’t change. That’s why I like spending time on mathematical conundrums, because they make me use the skills I use all the time but in a different way. 
+Mmmmm…π
+So what was the problem statement? It’s pretty simple:
+Find the first 7-digit palindrome in Pi that’s a prime number.
+Now, before we start slinging code, let’s make sure we know what we’re trying to solve. I realize that in this case, the problem sounds straightforward enough, but it’s still important to make sure we clearly understand the requirements. It’s not uncommon for consultants to put together a dictionary of client-specific terminology and nomenclature, because what we think is what a term means may be very far from the truth, and that can be costly. For example, I remember hearing a story early on in my consulting career about a group that was putting together software that would automatically cut wood for a lumber company. This would end up saving the company money in manual labor, but one small, yet crucial detail was overlooked. When the developers saw that the employees would specify the cut sizes as “16.3” and “8.4”, they naturally assumed that they meant numbers like “16 and 3/10 inches”. Unfortunately, that wasn’t right. The employees had, over the years, used “16.3” to mean “16 and 3/8 inches”. But the developers never asked them – they just assumed that “16.3” must stand for a rational number. Once the new cutter was in place, people quickly found numerous errors in the cut sizes.
+Therefore, let’s make sure we all know what we’re talking about in that problem statement. All of these definitions come straight from Wikipedia:
+•	Pi: Pi (or π) is a mathematical constant that is the ratio of a circle's circumference to its diameter. http://en.wikipedia.org/wiki/Pi
+•	Palindrome: A palindrome is a word, phrase, number, or other sequence of units that may be read the same way in either direction. http://en.wikipedia.org/wiki/Palindrome
+•	Prime: A prime number (or a prime) is a natural number greater than 1 that has no positive divisors other than 1 and itself. http://en.wikipedia.org/wiki/Prime_Number
+Now that we know what the terms stand for, it seems like it’ll be pretty easy to sling some code together and hack it up with duct tape and gum, right? Of course, I could just look up the answer because in this day and age, the internet has all the answers, right? But that’s counterproductive; the point is to come up with answer myself. You can’t get strong if someone else lifts the weights for you. 
+Break the problem up
+It’s very easy to get overwhelmed when solving a problem, especially in business applications. The requirements can easily fill up hundreds and hundreds (if not thousands) of printed pages. How can one person get their head around every single word of the requirements? No one can. So, one of the things people do is break the problem up into smaller, discrete areas and focus on solving those in chunks.
+Generate numbers from π
+Let’s do the same thing with this problem. The first thing we’ll need is something that can generate digits in π. There are numerous algorithms that you can use calculate digits in π– in fact, there’s an elegant algorithm that can calculate any digit of π without having to calculate any of the previous digits (http://crd-legacy.lbl.gov/~dhbailey/dhbpapers/pi-quest.pdf). We won’t need anything that sophisticated for now; we just need a reasonable set of π digits, like the first 1 million digits of π. A quick search on the internet found what I was looking for (http://www.piday.org/million.php). So I put those digits in a text file, created a C# project, and wrote a function that would produce digits of a specified size from those π digits:
+private const int BlockSize = 2048;
+
+public static IEnumerable<Tuple<string, long>> Generate(uint length)
+{
+  var number = new char[length];
+  var position = 0u;
+
+  using (var reader = new StreamReader(
+    typeof(NumberGenerator).Assembly
+    .GetManifestResourceStream("PiPrimesAndPalindromes.pi.txt")))
+  {
+    reader.ReadBlock(number, 0, (int)length);
+
+    yield return new Tuple<string, long>(
+      new string(number), position);
+
+    position++;
+    var newChar = new char[NumberGenerator.BlockSize];
+
+    while (true)
+    {
+      if (reader.EndOfStream)
+      {
+        break;
+      }
+      else
+      {
+        var digitsRead = reader.ReadBlock(
+          newChar, 0, NumberGenerator.BlockSize);
+
+        for (var i = 0; i < digitsRead; i++)
+        {
+          number.Rotate(1, RotateDirection.Negative);
+          number[length - 1] = newChar[i];
+          yield return new Tuple<string, long>(
+            new string(number), position);
+          position++;
+        }
+      }
+    }
+  }
+}
+I realize the problem said that we needed to look for 7 digits, so why didn’t I just hard-code 7? Through experience I’ve learned that you should generalize whenever you can. This is a rule-of-thumb and not an absolute, but there’s really no reason I should put the size within this function. Plus, this now makes it easier for me to ask other questions, like “what’s the first 9 digit palindromic prime in π?” But we’ll get to that later.
+Generate() takes the length of the number you want to create, and reads a block of characters from the file of that size. Then, it uses yield return to return that number as a character array along with the position of that number in a Tuple<string, long>. It keeps doing this until the caller stops asking for numbers or the end of the stream is reached. The Rotate() extension method comes from a library I wrote called Spackle (http://spacklenet.codeplex.com/). It rotates the elements of a IList<T> a specified number of positions in either direction. I do this because I already have the first n – 1 digits for the next number I need to produce – I just need to grab the next one. Therefore, I rotate the elements over one position to the left, and change the last value in the array to the next character in the π file.
+Is it a palindrome?
+The next thing I need is a function that will tell me if a string is a palindrome. I’ve never had to do such a calculation before, but after thinking about it for a bit, I discovered there’s a very simple way to find a palindrome. You start from each of the string, and you work your way in, character by character. If any of these end pairs don’t match, you know you don’t have a palindrome. Here’s what that code looks like:
+public static bool IsPalindrome(this string @this)
+{
+  if (!string.IsNullOrWhiteSpace(@this))
+  {
+    var length = @this.Length;
+
+    for (int i = 0; i < length / 2; i++)
+    {
+      if (@this[i] != @this[length - i - 1])
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+Is it prime?
+The last part is the hardest of the bunch. There are known ways to determine if an integer is a prime, but there’s nothing provided in the .NET framework, like an IsPrime() function. I created a very naïve implementation to check if a value is prime – here’s what I have:
+public static bool IsPrime(this string @this)
+{
+  BigInteger value;
+
+  if (BigInteger.TryParse(@this, out value) && 
+    value > 2 && !value.IsEven)
+  {
+    for (var i = new BigInteger(3); i < value.SquareRoot(); i += 2)
+    {
+      if (BigInteger.Remainder(value, i) == BigInteger.Zero)
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+I used BigInteger because if I wanted to search for a large palindromic prime, a BigInteger should handle it, assuming I have enough memory. Of course, there’s no SquareRoot() function for BigInteger out of the box, so I lifted one from http://stackoverflow.com/questions/3432412/calculate-square-root-of-a-biginteger-system-numerics-biginteger - check it out if you’re interested in how it works. Now, you may cry “foul!” with me using an implementation from the internet to handle the square root functionality. Didn’t I say before that the point of doing problems is to figure things out for yourself? I did, but then … well, how far do I go? Should I create the processor from scratch if I really have to build everything myself? There’s a fine line between “I’ll do it all” and “Please do my homework for me”. I probably could’ve figured out how to do the square root functionality on my own, but I had to determine if a number was prime. Calculating the square root of the number wasn’t a direct requirement, so using what someone already did was OK by me. 
+Another issue with BigInteger is that my naïve prime check is really going to start to slow down the larger the numbers get. I did some research and I found that in 2005 an extremely efficient algorithm was found to determine if an integer is prime. You can find out all the mathematical details here: http://teal.gmu.edu/courses/ECE746/project/F06_Project_resources/Salembier_Southerington_AKS.pdf. I didn’t try to implement that at this point because for my little excursion I didn’t need that optimization, but I have that link in the code … just in case I need to speed things up.
+What about unit tests?
+Speaking of testing … did I write unit tests for my code? Yes! You can find the tests in the ZIP file that contains all of the source code here: (TODO). I still find it amazing that in 2012, some developers don’t even try to write any kind of tests against their code. Having unit tests has helped me find errors when I change code and a bug shows up somewhere that I didn’t expect. Unit tests are not a full proof way to ensure you code is perfect; in my mind they’re there because a developer wanted to make sure his or her code was reasonably exercised to do what it was expected to do.
+So what’s the answer? 
+Now that I have my code in place and my unit tests pass…just what is the answer? What I found is 9149419, and it exists at the 13,901st position in π. I did a quick search online to see if anyone else had tried to solve this problem, and I found a site (http://www.lehmuskallio.com/test.php) that agrees with my answer. I also checked to see if 9149419 (which is obviously palindromic) is prime (http://www.wolframalpha.com/input/?i=is+9149419+prime) so at least I know that checks out! 
+By the way, here’s a list of the first n length palindrome primes in π from 3 to 9:
+Size: 3 - Result: 323 - Position: 15
+00:00:00.1019188
+Size: 4 - no palindrome found
+00:00:00.3359385
+Size: 5 - Result: 38183 - Position: 488
+00:00:00.0006569
+Size: 6 - no palindrome found
+00:00:00.2542149
+Size: 7 - Result: 9149419 - Position: 13901
+00:00:00.0078348
+Size: 8 - no palindrome found
+00:00:00.2876361
+Size: 9 - Result: 318272813 - Position: 129079
+00:00:00.0806759
+It’s interesting to note that when my code finds a palindromic prime, the time it takes is less (sometimes significantly so) than it does to traverse the entire file and not find anything. I’m guessing that the check to determine if the sequence of characters at a given position is palindromic returns false quicker the larger the size goes up. Meaning, as the size goes up, the chances of it being a palindrome decreases. However, note that the time between the size 7 and 9 searches goes up by an order of magnitude. One possibility is because the numbers are getting larger, the time it takes to check to see if the number is prime is increasing. What I really need to do is benchmark the IsPalindrome() and IsPrime() functions and see what their performance characteristics are as the sizes go up.
+I went up to 13, but after 9 I didn’t find any more palindromic primes. That doesn’t mean there aren’t any there – I could have a serious bug in my code that I missed, or I need to go far deeper into π to find that number. I haven’t looked into these possibilities yet.
+But this is the fun part of playing with problems like this. Coming up with the answer can yield all sorts of new questions, and you never know where those questions will take you. In fact, I may write a follow-up article to investigate the questions I came up with. 
+Conclusion
+A software developer’s job relies heavily on analytical skills. He or she has to be able to understand the issues at hand, think creatively, and come up with solid solutions that meet the requirements, perform well, and are stable. Taking the time solve problems that aren’t in the domain of “how can I make this query run well” or “what’s the best way to retrieve the data from this file” can stretch that brain muscle that’s so important for a developer to exercise. It was fun going through this problem, and I’m curious to know how you would have done things differently. Feel free to add your suggestions and ideas to the comments.
