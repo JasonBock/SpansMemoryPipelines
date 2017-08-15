@@ -9,8 +9,8 @@ namespace PlayingWithMemory
 			//Program.NaiveRefReturnsExample();
 			//BenchmarkRunner.Run<ListIndexPerformance>();
 			//BenchmarkRunner.Run<ScalingTests>();
-			//BenchmarkRunner.Run<AllocatingMemory>();
-			Program.BadCode();
+			BenchmarkRunner.Run<AllocatingMemory>();
+			//Program.BadCode();
 
 		private static unsafe void BadCode()
 		{
