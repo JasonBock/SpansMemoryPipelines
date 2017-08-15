@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -25,9 +25,4 @@
     <PackageReference Include="System.IO.Pipelines.Networking.Sockets" Version="0.1.0-e170811-6" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="data.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>
